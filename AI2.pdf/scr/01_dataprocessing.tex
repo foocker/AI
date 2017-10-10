@@ -1,0 +1,69 @@
+\chapter{数据处理}
+\label{sec:dataprocessing}
+数据处理是机器学习的关键一步，不论是在训练前还是在训练当中，都存在对数据的各种处理。训练前，数据收集，数据质量评判，数据表示，数据特征抽取，数据降维，数据归一化，训练中，数据批归一化，数据重构...。
+
+接下来假设我们已经拥有了比较完整均匀的数据。
+
+\section*{数据预处理}
+\label{sec:Dimensionlityreduction}
+
+\subsection*{Multivariate Statistical Analysis}
+\label{sub:MSA}
+多变量分析主要用于分析拥有多个变数的资料，探讨资料彼此之间的关联性或是厘清资料的结构，而有别于传统统计方法所着重的参数估计以及假设检定。常见的分析方法有PCA,CCA,MDS,SEM等。
+  \subsubsection*{PCA}
+  \label{subsec:PCA}
+  主成分分析:\href{https://en.wikipedia.org/wiki/Principal_component_analysis}{PCA}
+
+  PCA分析计算的核心就是矩阵的奇异值分解，奇异值分解属于谱定理的一小部分，数学上谱定理是个很精彩的定理，但这里我们只能介绍SVD。
+
+假设M是一个$m×n$阶矩阵，其中的元素全部属于域$K$，也就是实数域或复数域。如此则存在一个分解使得
+$$M=U\Sigma V^{*}$$
+其中$U$是$m×m$阶酉矩阵；$Σ$是$m×n$阶非负实数对角矩阵；而$V^*$，即V的共轭转置，是$n×n$阶酉矩阵。这样的分解就称作M的奇异值分解。$\Sigma$对角线上的元素$\Sigma_i,i$即为$M$的奇异值。
+%   \end{theorem}
+
+对于PCA，我们要分解的就是数据的经验协方差阵，因为协方差阵是对称的，在线性代数里，我们知道每个正规矩阵都可以被一组特征向量对角化。即:$$M=U \Sigma U^*.$$实际上对于对称矩阵我们还可以做到$$M=U \Sigma U^{-1}.$$
+意义自明，$U$的第$i$列表示$M$的第$i$个特征值对应的特征向量(这里假设特征值是按顺序排列了)。现在我们需要多大比例的保持方差极大信息，选择一定数量的特征值及其特征向量即可。
+
+“PCA具有保持子空间拥有最大方差的最优正交变换的特性。然而，当与离散余弦变换相比时，它需要更大的计算需求代价。非线性降维技术相对于PCA来说则需要更高的计算要求。”
+
+  \subsubsection*{CCA}
+  \label{subsec:CCA}
+  典型相关分析:\href{https://en.wikipedia.org/wiki/Canonical_correlation}{CCA}
+
+  CCA寻找两个具有相互关系的随机变量的特征的线性组合，使其表示成的新特征之间具有最大的相关性。可以说是一种保持特征相关性的特征重构。具有降维的作用。其计算过程和PCA差不多，首先根据两随机向量$X, Y$计算其互协方差矩阵，然后求解向量$a, b$使得$\rho = corr(a^{'}X, b^{'}Y)$最大，其中$U = a^{'}X, V = b^{'}Y$是第一对典型变量，然后依次求得不相关的典型变量对。而这个问题最后被转化成一个求由协方差阵组合成的某对称矩阵的特征向量问题。
+
+  相关代码参考:\href{http://scikit-learn.org/stable/modules/cross_decomposition.html}{PyCCA}
+
+  
+  \subsubsection*{Multidimensional scaling}
+  \label{subsec:MDS}
+  多维标度:\href{https://en.wikipedia.org/wiki/Multidimensional_scaling}{MDS}
+
+  代码参考:\href{http://scikit-learn.org/stable/modules/generated/sklearn.manifold.MDS.html}{PyMDS}
+
+\subsection*{AutoEncoder}
+\label{subsec:AutoEncoder}
+\href{https://en.wikipedia.org/wiki/Autoencoder}{AutoEncoder}
+
+从维基上我们看到，自编码是一种无监督式的数据重构方法，其理论比较简单，相应的利用Tensorflow或者Pytorch实现它也很简单，其扩展方式很多。
+
+现在我们来看看采用概率图模型的自编码方法:Variational autoencoder。这里算了提前进入机器学习概率这一板块了，讲道理，这块是我的弱项。算是提前在这里熟悉概率的一些基本的东西吧。
+
+\href{http://www.cnblogs.com/huangshiyu13/p/6209016.html}{通俗VAE}此讲解作为第一次阅读，以及后面的彩蛋，都不错。
+结合\href{http://blog.csdn.net/jackytintin/article/details/53641885}{入门VAE}该文章小错误比较多，作为入门理解，还是不错的，且不可关注过多细节。
+\href{https://sherlockliao.github.io/2017/06/24/vae/}{入门2AVE}
+
+基础阅读材料:\href{https://arxiv.org/abs/1606.05908}{TutorialVAE}以及简短的变分推理
+Blei, David M. "Variational Inference." Lecture from Princeton。
+% 一些增强理解的就随意搜索即可:
+% \href{https://zhuanlan.zhihu.com/p/21741426}{zhihuVAE}
+
+
+\section*{传统图像预处理}
+\label{subsec:troditionarycvprocess}
+
+
+\section*{Pycode}
+
+\endinput
+

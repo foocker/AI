@@ -1,0 +1,113 @@
+\chapter{机器学习}
+\label{chap:mlm}
+本章包含了机器学习的经典算法.
+经典的机器学习算法有很多库都已经实现，我们没必要所有都去造轮子，我的选择是理解其数学部分，使用现有的库sklearn，并在实践中分析理论与和实际的差距。假设我们对理论和库的调用都不太熟悉，实际上sklearn的document本身就是一个很好的学习地方，那里包含了算法的相关参考文献。后面的章节我们首先以这种方式来学习经典机器学习。
+
+开始页面：\href{http://scikit-learn.org/stable/user_guide.html#user-guide}{sklearn-user-guide}
+
+\begin{description}
+    \item[1]监督学习
+        \begin{description}
+            \item[1.1] 一般线性模型
+            \item[1.3] 支持向量机
+            \item[1.5] 随机梯度下降法
+            \item[1.7] 高斯过程
+            \item[1.11] 集成方法
+            \item[1.12] 多类和多标签
+            \item[1.13] 特征选择
+            \item[1.17] 神经网络(监督)
+        \end{description} 
+    \item[2]非监督学习
+        \begin{description}
+            \item[2.1] 高斯混合模型
+            \item[2.2] 流形学习
+            \item[2.3] 聚类
+            \item[2.9] 神经网络模型(非监督)
+        \end{description}
+    \item[3]模型选择和评估  
+    \item[4]数据处理
+        \begin{description}
+            \item[4.1] Pipeline and FeatureUnion:组合估计
+            \item[4.2] 特征提取
+            \item[4.3] 数据预处理
+            \item[4.4] 非监督降维
+            \item[4.5] 随机投影
+            \item[4.6] 核近似
+            \item[4.7]  Pairwise metrics, Affinities and Kernels
+            \item[4.8] 变换目标值
+        \end{description}
+    \item[5]数据导入
+    \item[6]大数据 
+\end{description}
+
+以上是sklearn指导文档首页的部分目录，现在我们随机选择一些东西学习，比如我这里选择了接下来的四节内容。这只是一个初步的学习，剩下的就是在实践中不断的深化理解实际和理论上的差别，然后再反过来思考理论上的问题。这部分的理论相对简单，但这些优化方法却是人工智能的基础。
+
+\section*{Regression}
+\label{sec:lr}
+进入一般线性模型，玲琅满目，眼花缭乱。
+\subsection{Logistic regression}
+逻辑回归是一个二分类概率模型，其很容易扩展到多元情形，它将特征向量映射为一个概率向量，其每个分量表示特征属于其对应标签的概率。模型可表示如下：
+\begin{equation}
+    P^{LR}(W)=C\sum_{i=1}^{n}log(1+e^{-y_{i}W^{T}\mathrm{x_i}}) + 1/2W^{T}W
+\end{equation}
+
+其中$\{\mathrm{x_i},y_i\}_{i=1}^{n}$表示数据以及其标签，$\mathrm{x_{i}}\in R^{m}, y_i \in \{1, -1\}.C>0,W$是要学习的参数。
+
+给定数据及其标签，我们可以用如下公式来表示条件概率。
+\begin{equation}
+    P_{W}(y=\pm 1|\mathrm{x})=\frac{1}{1+e^{-yW^{T}\mathrm{x}}}
+\end{equation}
+
+根据极大似然原理，我们很容易由(2.2)得到(2.1)，如果我们去掉(2.1)的$1/2W^{T}W$，这个多余的东西其实就是正则项，用来限制参数$W$，防止过拟合的技巧。这个后面详说。在实际情况中，往往需要很多额外起脚来使模型更加实用。
+
+现在的问题是如何得到模型参数$W,C$?
+
+答案：Coordinate descent approch, quasi-Newton method,iterative scaling method, exponetiatel gradient ...如果你学过数值分析的话，你会觉得很多似曾相识，如果你学过凸分析的话，你会觉得很亲切，随着学习的深入，我们会逐渐建立更清晰的理论框架。现在不妨将视角转向SVM。
+
+\href{https://en.wikipedia.org/wiki/Linear_regression}{Linear regression}
+\href{https://en.wikipedia.org/wiki/Logistic_regression}{Logisticregression}
+
+\section*{支持向量机}
+\label{sec:SVM}
+SVM，一个二分类线性模型，简单的说，就是我们高中遇见的线性规划问题的推广。我们知道直线$y=kx+b$将平面$xy$分成两部分，其实也就是两类，一类在“上面”，一类在“下面”。现在我们的情况只是在维度上增加了，也就是寻找一个超平面$y=Wx+b$能将数据分类出来。模型可表示如下：
+
+\begin{equation}
+    P^{SVM}(W)=C\sum_{i=1}^{n}max(1-y_iW^{T}\mathrm{x_i},0)+1/2W^{T}W
+\end{equation}
+
+很明显超平面是依赖训练数据的。从文档上看，该分类其的好处有：
+
+    \begin{description}
+        \item[.] 高维空间上比较高效。
+        \item[.] 对特征维度大于样本量时，仍然有效(大过多时，需要适当的选择核函数和正则项)。
+        \item[.] 用部分数据来得到决策函数，也即支持向量，能减少内存。
+    \end{description}
+
+上面只是最简单的情形，多分类，多元回归呢？
+
+我们先来看看文档里的情况，
+对于多分类，从文档里我们了解到两种方法：SVC的“one-against-one”，$n$类标签构建
+$\binom{n}{2}$个分类器;LinearSVC的“one-vs-the-rest”，训练$n$个模型。
+
+对于回归问题，其对应的模块名叫SVR。自行查看即可。现在的问题是：怎么从分类模型过度到回归模型呢？完整想出来，似乎还是有点难度，但是我们看到网页所给参看文献\href{http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.114.4288}{SVR}，好了，又到了真正学习的时候了。
+
+\textcolor{red}{此段讲理论，以及代码分析。}
+
+然而实际上我们对多分类问题的处理方式还是失望的，我们并不想重复二分类模型，针对这个问题，表明我们该看看1.12节\href{http://scikit-learn.org/stable/modules/multiclass.html}{Multiclass-Multilabel}了。
+
+\textcolor{red}{Maximum Entropy}
+
+蹦，问题又来了，所谓超平面，直观上看，毕竟是个“平”的。实际问题中，数据往往需要用一个弯曲的面才能将其较好的分类出来，这时怎么办呢？自然的我们有两种想法，一种直接把超曲面算出来，但这样不太好，考虑到曲面的表示方式，能控制的范围太小了，而实际变化范围太大;另一种方法就是保持超平面不变，直接映射输入数据，使其能被平面分割。这就是所谓的核技巧。
+
+\textcolor{red}{核技巧讲完了。}
+
+现在我们来看看以上模型该如何学习参数。
+
+随机选择一个Reference:\href{http://www.csie.ntu.edu.tw/~cjlin/papers/maxent_dual.pdf}{Dual coordinate descent for LR and ME}
+
+\section*{Adaboost}
+\label{sec:Adaboost}
+
+\section*{高斯混合模型}
+
+\endinput

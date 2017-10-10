@@ -1,0 +1,48 @@
+%!TEX program = xelatex
+\documentclass[UTF8, a4paper, zihao = 5]{ctexbook}
+    
+    \title{Machine or Deep Learning}
+    \author{冯 迁}
+    \date{\today}
+    
+    \usepackage{amsmath, bm}
+    \usepackage{hyperref}
+    \usepackage[normalem]{ulem}
+    \usepackage{enumitem}
+    \setlist{nosep}
+    \usepackage{caption}
+    \input{settings_caption}
+    \usepackage{graphicx}
+    \graphicspath{{./pic/}}
+    \usepackage[usenames, dvipsnames]{xcolor}
+    \usepackage{listings}
+    \input{settings_listings}
+    \usepackage{hologo}
+    
+    \ctexset{section/format += \raggedright}
+    
+    \input{settings_defines}
+    
+    \begin{document}
+    
+    \frontmatter
+    \maketitle
+    \tableofcontents
+    \include{./scr/00_preface}
+
+    \mainmatter
+    \include{./scr/01_dataprocessing}
+    \include{./scr/02_machinelearning}
+    \include{./scr/03_mathneed}
+    \include{./scr/04_deeplearning}
+    \include{./scr/05_ag}
+    \include{./scr/06_paperreading}
+    
+
+    \appendix
+    % \input{}
+
+    \backmatter
+    
+    \end{document}
+    \endinput
